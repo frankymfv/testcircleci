@@ -1,0 +1,42 @@
+version: 2.1
+setup: true
+
+# Define the parameter `target_env` dynamically at pipeline level
+parameters:
+  target_env:
+    type: string
+    default: ''  # The environment (beta | staging | production)
+
+# Setup job that dynamically determines `target_env`
+jobs:
+  setup_job:
+    steps:
+      - setup: true
+      - run:
+          name: "Determine target_env"
+          command: |
+            echo "Determining target_env based on branch..."
+            if [ "$CIRCLE_BRANCH" == "main" ]; then
+              echo '{ "target_env": "production" }' > .circleci/pipeline_config.yml
+            elif [ "$CIRCLE_BRANCH" == "develop" ]; then
+              echo '{ "target_env": "staging" }' > .circleci/pipeline_config.yml
+            else
+              echo '{ "target_env": "beta" }' > .circleci/pipeline_config.yml
+      - setup: true
+
+# Main job that uses the dynamically set `target_env`
+jobs:
+  my_job:
+    parameters:
+      target_env:
+        type: string
+    steps:
+      - run: echo "Deploying to << parameters.target_env >> environment"
+
+# Workflow definition
+workflows:
+  my_workflow:
+    jobs:
+      - setup_job
+      - my_job:
+          target_env: << pipeline.parameters.target_env >>
