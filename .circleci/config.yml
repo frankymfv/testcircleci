@@ -50,4 +50,7 @@ workflows:
   my_workflow:
     jobs:
       - setup_job
-      - my_job
+      - my_job:
+          requires:
+            - setup_job
+        
