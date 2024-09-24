@@ -15,28 +15,39 @@ jobs:
       - run:
           name: "Determine target_env"
           command: |
-            echo "Determining target_env based on branch..."
-            if [ "$CIRCLE_BRANCH" == "main" ]; then
-              echo '{ "target_env": "production" }' > .circleci/pipeline_config.yml
-            elif [ "$CIRCLE_BRANCH" == "develop" ]; then
-              echo '{ "target_env": "staging" }' > .circleci/pipeline_config.yml
+            echo "Determining target_env based on branch and pipeline parameters..."
+            
+            # Check if pipeline parameter target_env is set
+            if [ -n "<< pipeline.parameters.target_env >>" ]; then
+              echo 'export TARGET_ENV="<< pipeline.parameters.target_env >>"' >> $BASH_ENV
             else
-              echo '{ "target_env": "beta" }' > .circleci/pipeline_config.yml
+              # If not set, determine based on branch
+              if [ "$CIRCLE_BRANCH" == "main" ]; then
+                echo 'export TARGET_ENV="production"' >> $BASH_ENV
+              elif [ "$CIRCLE_BRANCH" == "develop" ]; then
+                echo 'export TARGET_ENV="staging"' >> $BASH_ENV
+              else
+                echo 'export TARGET_ENV="beta"' >> $BASH_ENV
+              fi
+            fi
+            
+      - run:
+          name: "Echo target_env"
+          command: |
+            echo "TARGET_ENV is set to: $TARGET_ENV"
 
 # Main job that uses the dynamically set `target_env`
   my_job:
     docker:
       - image: circleci/python:3.8
-    parameters:
-      target_env:
-        type: string
     steps:
-      - run: echo "Deploying to << parameters.target_env >> environment"
+      - run:
+          name: "Deploying to target_env"
+          command: echo "Deploying to $TARGET_ENV environment"
 
 # Workflow definition
 workflows:
   my_workflow:
     jobs:
       - setup_job
-      - my_job:
-          target_env: << pipeline.parameters.target_env >>
+      - my_job
