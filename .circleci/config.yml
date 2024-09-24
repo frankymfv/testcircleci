@@ -1,5 +1,4 @@
 version: 2.1
-setup: true
 
 # Define the parameter `target_env` dynamically at pipeline level
 parameters:
@@ -10,8 +9,9 @@ parameters:
 # Setup job that dynamically determines `target_env`
 jobs:
   setup_job:
+    docker:
+      - image: circleci/python:3.8
     steps:
-      - setup: true
       - run:
           name: "Determine target_env"
           command: |
@@ -22,11 +22,11 @@ jobs:
               echo '{ "target_env": "staging" }' > .circleci/pipeline_config.yml
             else
               echo '{ "target_env": "beta" }' > .circleci/pipeline_config.yml
-      - setup: true
 
 # Main job that uses the dynamically set `target_env`
-jobs:
   my_job:
+    docker:
+      - image: circleci/python:3.8
     parameters:
       target_env:
         type: string
