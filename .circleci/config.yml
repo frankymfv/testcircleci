@@ -42,6 +42,9 @@ jobs:
       - image: circleci/python:3.8
     steps:
       - run:
+          name: "Print all environment variables"
+          command: env
+      - run:
           name: "Deploying to target_env"
           command: echo "Deploying to $TARGET_ENV environment"
 
