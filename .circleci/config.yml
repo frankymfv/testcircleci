@@ -8,34 +8,6 @@ parameters:
 
 # Setup job that dynamically determines `target_env`
 jobs:
-  setup_job:
-    docker:
-      - image: circleci/python:3.8
-    steps:
-      - run:
-          name: "Determine target_env"
-          command: |
-            echo "Determining target_env based on branch and pipeline parameters..."
-            
-            # Check if pipeline parameter target_env is set
-            if [ -n "<< pipeline.parameters.target_env >>" ]; then
-              echo 'export TARGET_ENV="<< pipeline.parameters.target_env >>"' >> $BASH_ENV
-            else
-              # If not set, determine based on branch
-              if [ "$CIRCLE_BRANCH" == "main" ]; then
-                echo 'export TARGET_ENV="production"' >> $BASH_ENV
-              elif [ "$CIRCLE_BRANCH" == "develop" ]; then
-                echo 'export TARGET_ENV="staging"' >> $BASH_ENV
-              else
-                echo 'export TARGET_ENV="beta"' >> $BASH_ENV
-              fi
-            fi
-            
-      - run:
-          name: "Echo target_env"
-          command: |
-            echo "TARGET_ENV is set to: $TARGET_ENV"
-
 # Main job that uses the dynamically set `target_env`
   my_job:
     docker:
@@ -52,8 +24,5 @@ jobs:
 workflows:
   my_workflow:
     jobs:
-      - setup_job
-      - my_job:
-          requires:
-            - setup_job
+      - my_job
         
