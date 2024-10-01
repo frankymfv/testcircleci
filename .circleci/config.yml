@@ -6,7 +6,10 @@ parameters:
     type: string
     default: ''  # The environment (beta | staging | production)
 
-# Setup job that dynamically determines `target_env`
+# Include the jobs.yml file
+include:
+  - ./dev.yml
+
 jobs:
 # Main job that uses the dynamically set `target_env`
   my_job:
@@ -20,9 +23,10 @@ jobs:
           name: "Deploying to target_env"
           command: echo "Deploying to $TARGET_ENV environment"
 
+
 # Workflow definition
 workflows:
   my_workflow:
     jobs:
       - my_job
-        
+      - hello_world

@@ -1,0 +1,10 @@
+version: 2.1
+
+jobs:
+  hello_world:
+    docker:
+      - image: circleci/python:3.8
+    steps:
+      - run:
+          name: "Print Hello World"
+          command: echo "Hello, World!"
