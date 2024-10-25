@@ -41,7 +41,7 @@ workflows:
     when: 
       and: # All must be true to trigger
         - equal: [ main, << pipeline.git.branch >> ]
-  tag_testing:
+  branch_testing:
     when: 
       and:
         - matches: 
@@ -49,4 +49,16 @@ workflows:
             value: << pipeline.git.branch >>
     jobs:
       - hello_world
+
+  tag_testing:
+    when: 
+      and:
+        - matches: 
+            pattern: /^mas.*$/
+            value: << pipeline.git.tag >>
+    jobs:
+      - hello_world:
+          filters:
+            tags:
+              only: /.*/
 
