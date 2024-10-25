@@ -1,14 +1,6 @@
 version: 2.1
 
-# Define the parameter `target_env` dynamically at pipeline level
-parameters:
-  target_env:
-    type: string
-    default: ''  # The environment (beta | staging | production)
-
-# Include the jobs.yml file
-include:
-  - ./dev.yml
+setup: true
 
 jobs:
 # Main job that uses the dynamically set `target_env`
@@ -22,11 +14,20 @@ jobs:
       - run:
           name: "Deploying to target_env"
           command: echo "Deploying to $TARGET_ENV environment"
-
+  hello_world:
+    docker:
+      - image: circleci/python:3.8
+    steps:
+      - run:
+          name: "Print Hello World"
+          command: echo "Hello, World!"
 
 # Workflow definition
 workflows:
   my_workflow:
     jobs:
       - my_job
+      - hello_world
+  only_hellworld:
+    jobs:
       - hello_world
