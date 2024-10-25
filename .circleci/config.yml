@@ -23,6 +23,14 @@ jobs:
       - run:
           name: "Print Hello World"
           command: echo "Hello, World!"
+      - run:
+          name: "print tag"
+          command: |
+            if [ -n << pipeline.git.tag >> ]; then
+              echo "This is a tag build << pipeline.git.tag >> "
+            else
+              echo "This is not a tag build"
+            fi
 
 # Workflow definition with branch filters
 workflows:
@@ -49,4 +57,5 @@ workflows:
             value: << pipeline.git.branch >>
     jobs:
       - hello_world
+    
 
