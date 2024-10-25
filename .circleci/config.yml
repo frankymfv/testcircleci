@@ -41,3 +41,7 @@ workflows:
     when: 
       and: # All must be true to trigger
         - equal: [ main, << pipeline.git.branch >> ]
+  any_branch_test:
+    jobs:
+      - hello_world
+
