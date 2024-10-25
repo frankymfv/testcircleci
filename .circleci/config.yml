@@ -46,7 +46,7 @@ workflows:
       and:
         - matches: 
             pattern: /^[0-9]+(\.[0-9]+)*$/
-            value: << pipeline.git.tag >>
+            value: << pipeline.git.branch >>
     jobs:
       - hello_world
 
