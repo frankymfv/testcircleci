@@ -30,10 +30,14 @@ workflows:
     jobs:
       - my_job
     # Example filter to run only on `main` branch
-    when: << pipeline.git.branch == "main" >>
+    when: 
+      and: # All must be true to trigger
+        - equal: [ master, << pipeline.git.branch >> ]
 
   only_helloworld:
     jobs:
       - hello_world
     # Example filter to run only on `dev` branch
-    when: << pipeline.git.branch == "dev" >>
+    when: 
+      and: # All must be true to trigger
+        - equal: [ main, << pipeline.git.branch >> ]
