@@ -27,9 +27,9 @@ jobs:
           name: "print tag"
           command: |
             if [ -n << pipeline.git.tag >> ]; then
-              echo "This is a tag build "
+              echo "This is a not tag build "
             else
-              echo "This is not a tag build << pipeline.git.tag >> "
+              echo "This is a tag build << pipeline.git.tag >> "
             fi
 
 # Workflow definition with branch filters
