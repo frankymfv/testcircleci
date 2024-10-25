@@ -32,7 +32,7 @@ workflows:
     # Example filter to run only on `main` branch
     when: 
       and: # All must be true to trigger
-        - equal: [ master, << pipeline.git.branch >> ]
+        - equal: [ dev, << pipeline.git.branch >> ]
 
   only_helloworld:
     jobs:
