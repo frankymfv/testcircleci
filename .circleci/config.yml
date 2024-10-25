@@ -45,7 +45,7 @@ workflows:
     when: 
       and:
         - matches: 
-            pattern: "^mast*$"
+            pattern: /^mast*$/
             value: << pipeline.git.branch >>
     jobs:
       - hello_world
