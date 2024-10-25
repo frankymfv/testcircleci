@@ -45,7 +45,7 @@ workflows:
     when: 
       and:
         - matches: 
-            pattern: "master"
+            pattern: "^ma*"
             value: << pipeline.git.branch >>
     jobs:
       - hello_world
