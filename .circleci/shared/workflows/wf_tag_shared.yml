@@ -6,8 +6,11 @@ when:
         value: << pipeline.git.tag >>
 jobs:
   - job_hello_world_shared:
-      filters:
+      filters: &tag_filter
         tags:
           only: /.*/
+  - job_shared_1:
+      filters: *tag_filter
+      
   - job_hello_world_2_shared # this job won't run because its filter is not satisfied for tags
     

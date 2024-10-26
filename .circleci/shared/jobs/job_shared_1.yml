@@ -1,0 +1,6 @@
+
+executor: circleci-cli/default
+steps:
+  - run:
+      name: echo Job shared 1 
+      command: echo "Job shared 1"
