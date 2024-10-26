@@ -61,4 +61,6 @@ workflows:
           filters:
             tags:
               only: /.*/
-
+  other_branch:
+    jobs:
+      - hello_world
