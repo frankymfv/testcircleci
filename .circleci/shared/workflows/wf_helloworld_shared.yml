@@ -1,0 +1,8 @@
+when: 
+  and:
+    - matches: 
+        pattern: /^master$/
+        value: << pipeline.git.branch >>
+jobs:
+  - job_hello_world_shared
+            
