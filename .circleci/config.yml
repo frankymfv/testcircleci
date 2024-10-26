@@ -38,7 +38,7 @@ jobs:
             command: circleci config validate .circleci/generated-config.yml # Money Forward org-id
       - continuation/continue:
           configuration_path: .circleci/generated-config.yml
-  helloworld_job:
+  hello_world:
     executor: circleci-cli/default
     steps:
       - run:
