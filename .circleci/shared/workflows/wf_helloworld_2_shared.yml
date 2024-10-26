@@ -1,0 +1,6 @@
+when: 
+  and:
+    - equal: [ master, << pipeline.git.branch >> ]
+jobs:
+  - job_hello_world_shared
+            
