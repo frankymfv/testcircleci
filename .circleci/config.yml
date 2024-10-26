@@ -26,6 +26,7 @@ jobs:
   setup:
     executor: circleci-cli/default
     steps:
+      - checkout
       - circleci-cli/install
       - run:
             name: Pack
