@@ -9,4 +9,5 @@ jobs:
       filters:
         tags:
           only: /.*/
-            
+  - job_hello_world_2_shared # this job won't run because its filter is not satisfied for tags
+    
