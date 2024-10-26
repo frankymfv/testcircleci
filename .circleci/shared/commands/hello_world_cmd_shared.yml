@@ -1,0 +1,6 @@
+
+description: "A simple hello world command"
+steps:
+  - run:
+      name: "Print Hello World command shared"
+      command: echo "Hello, World! command shared"

@@ -1,0 +1,7 @@
+
+executor: circleci-cli/default
+steps:
+  - run:
+      name: echo helloworld
+      command: echo "Hello World shared job"
+  - hello_world_cmd_shared

@@ -1,0 +1,30 @@
+commands:
+    hello_world_cmd_shared:
+        description: A simple hello world command
+        steps:
+            - run:
+                command: echo "Hello, World! command shared"
+                name: Print Hello World command shared
+jobs:
+    hello_world_job_shared:
+        executor: circleci-cli/default
+        steps:
+            - run:
+                command: echo "Hello World shared job"
+                name: echo helloworld
+            - hello_world_cmd_shared
+setup: true
+version: 2.1
+workflows:
+    hellworld_wf_shared:
+        jobs:
+            - hello_world_job_shared:
+                filters:
+                    tags:
+                        only: /.*/
+        when:
+            and:
+                - matches:
+                    pattern: /^v[0-9]+(\.[0-9]+)*$/
+                    value: << pipeline.git.tag >>
+

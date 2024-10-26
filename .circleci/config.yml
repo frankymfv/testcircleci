@@ -2,46 +2,53 @@ version: 2.1
 
 setup: true
 
-jobs:
-  # Main job that uses the dynamically set `target_env`
-  my_job:
-    docker:
-      - image: circleci/python:3.8
-    steps:
-      - run:
-          name: "Print all environment variables"
-          command: env
-      - run:
-          name: "Deploying to target_env"
-          command: echo "Deploying to $TARGET_ENV environment"
+orbs:
+  circleci-cli: circleci/circleci-cli@0.1.9
+  continuation: circleci/continuation@1.0.0
 
-  # Separate job to print "Hello, World!"
-  hello_world:
-    docker:
-      - image: circleci/python:3.8
+
+definitions:
+  filters:
+    allow_run_setup_job_filter: &allow_run_setup_job_filter
+      branches:
+        only:
+          - develop # use for idev
+          - main # use for PRODUCTION
+          - master # use for PRODUCTION
+          
+        ignore: /.*/ # ignore other trash branches
+      tags:
+        only:
+          - /^[0-9]+(\.[0-9]+)*$/ # use for PRODUCTION
+          - /^v[0-9]+(\.[0-9]+)*$/
+          # ignore other trash tags
+
+jobs:
+  setup:
+    executor: circleci-cli/default
+    steps:
+      - circleci-cli/install
+      - run:
+            name: Pack
+            command: circleci config pack .circleci/shared > .circleci/generated-config.yml
+      - run:
+          name: echo config.yaml file
+          command: cat .circleci/generated-config.yml
+      - run:
+            name: Validate
+            command: circleci config validate .circleci/generated-config.yml # Money Forward org-id
+      - continuation/continue:
+          configuration_path: .circleci/generated-config.yml
+  helloworld_job:
+    executor: circleci-cli/default
     steps:
       - run:
-          name: "Print Hello World"
-          command: echo "Hello, World!"
+          name: echo helloworld
+          command: echo "Hello World"
 
 # Workflow definition with branch filters
 workflows:
-  my_workflow:
-    jobs:
-      - my_job
-    # Example filter to run only on `main` branch
-    when: 
-      and: # All must be true to trigger
-        - equal: [ dev, << pipeline.git.branch >> ]
-
-  only_helloworld:
-    jobs:
-      - hello_world
-    # Example filter to run only on `dev` branch
-    when: 
-      and: # All must be true to trigger
-        - equal: [ main, << pipeline.git.branch >> ]
-  branch_master_testing:
+  branch_master_testing_regex:
     when: 
       and:
         - matches: 
@@ -49,22 +56,14 @@ workflows:
             value: << pipeline.git.branch >>
     jobs:
       - hello_world
-  branch_master_testing_2:
+  branch_main_testing_euqal:
     when: 
       and: # All must be true to trigger
-      - equal: [ master, << pipeline.git.branch >> ]
+      - equal: [ main, << pipeline.git.branch >> ]
     jobs:
       - hello_world
 
-  tag_testing:
-    when: 
-      and:
-        - matches: 
-            pattern: /^v[0-9]+(\.[0-9]+)*$/
-            value: << pipeline.git.tag >>
+  setup_flow:
     jobs:
-      - hello_world:
-          filters:
-            tags:
-              only: /.*/
-
+      - setup:
+          filters: *allow_run_setup_job_filter
