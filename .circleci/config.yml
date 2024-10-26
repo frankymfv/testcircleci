@@ -13,7 +13,6 @@ definitions:
       branches:
         only:
           - develop # use for idev
-          - main # use for PRODUCTION
           - master # use for PRODUCTION
           
         ignore: /.*/ # ignore other trash branches
@@ -52,7 +51,7 @@ workflows:
     when: 
       and:
         - matches: 
-            pattern: /^mas.*$/
+            pattern: /^dev.*$/
             value: << pipeline.git.branch >>
     jobs:
       - hello_world
