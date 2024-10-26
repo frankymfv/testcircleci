@@ -1,3 +1,6 @@
 version: 2.1
 
 setup: true
+
+orbs:
+  circleci-cli: circleci/circleci-cli@0.1.9
