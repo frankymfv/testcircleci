@@ -26,11 +26,7 @@ steps:
       command: |
         # must use same profile specified in the step above       
         aws ecr get-login-password --region ${AWS_REGION} --profile "OIDC_PROFILE" | docker login --username AWS --password-stdin ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com
-  - run:
-      name: List-ECR-Repositories
-      command: |
-        # must use same profile specified in the step above
-        aws ecr describe-repositories --profile "OIDC_PROFILE"
+
   - run:
       name: build docker image
       command: |
@@ -39,4 +35,9 @@ steps:
       name: push docker image
       command: |
         docker push ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${AWS_ECR_REPOSITORY}:${CIRCLE_SHA1}
+  - run:
+      name: List-ECR-Repositories
+      command: |
+        # must use same profile specified in the step above
+        aws ecr describe-repositories  --repository-names "${AWS_ECR_REPOSITORY}" --profile "OIDC_PROFILE"
       
