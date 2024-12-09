@@ -25,8 +25,7 @@ steps:
       name: Log-into-AWS-ECR
       command: |
         # must use same profile specified in the step above       
-        aws ecr get-login-password --region ${AWS_REGION} --profile "OIDC_PROFILE" 
-        docker login --username AWS --password-stdin ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com
+        aws ecr get-login-password --region ${AWS_REGION} --profile "OIDC_PROFILE" | docker login --username AWS --password-stdin ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com
   - run:
       name: List-ECR-Repositories
       command: |
