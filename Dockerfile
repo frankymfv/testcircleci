@@ -9,3 +9,4 @@ COPY . /app
 
 # Run the hello world script
 CMD ["python", "-c", "print('Hello, World!')"]
+
