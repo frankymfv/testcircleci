@@ -1,24 +1,6 @@
 when: 
   and:
     - equal: [ master, << pipeline.git.branch >> ]
-orbs:
-  aws-cli: circleci/aws-cli@5.1.1
 
 jobs:
-  build-push:
-    docker:
-      - image: cimg/aws:2022.06
-    steps:
-      - checkout
-      - aws-cli/setup:
-          role_arn: "arn:aws:iam::${AWS_ACCOUNT_ID}:role/OIDC_CIRCLECI_FRANKY_ORG_ROLE"
-          region: ${AWS_REGION}
-          # optional parameters
-          profile_name: "OIDC-PROFILE"
-          role_session_name: “example-session”
-          session_duration: 1800
-     - run:
-         name: Log-into-AWS-ECR
-         command: |
-           # must use same profile specified in the step above       
-           aws ecr get-login-password --profile "OIDC-PROFILE"
+  - job_login_ecr
