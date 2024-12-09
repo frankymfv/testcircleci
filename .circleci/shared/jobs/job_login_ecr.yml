@@ -1,5 +1,7 @@
 docker:
   - image: cimg/aws:2022.06
+environment:
+  AWS_ECR_REPOSITORY: 'franky_test_1'
 steps:
   - checkout
   - aws-cli/setup:
@@ -19,3 +21,23 @@ steps:
       command: |
         # must use same profile specified in the step above       
         aws ecr get-login-password --profile "OIDC_PROFILE"
+  - run:
+      name: Log-into-AWS-ECR
+      command: |
+        # must use same profile specified in the step above       
+        aws ecr get-login-password --region ${AWS_REGION} --profile "OIDC_PROFILE" 
+        docker login --username AWS --password-stdin ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com
+  - run:
+      name: List-ECR-Repositories
+      command: |
+        # must use same profile specified in the step above
+        aws ecr describe-repositories --profile "OIDC_PROFILE"
+  - run:
+      name: build docker image
+      command: |
+        docker build -t ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${AWS_ECR_REPOSITORY}:${CIRCLE_SHA1} .
+  - run:
+      name: push docker image
+      command: |
+        docker push ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${AWS_ECR_REPOSITORY}:${CIRCLE_SHA1}
+      
