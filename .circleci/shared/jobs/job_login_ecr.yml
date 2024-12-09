@@ -6,11 +6,16 @@ steps:
       role_arn: "arn:aws:iam::${AWS_ACCOUNT_ID}:role/OIDC_CIRCLECI_FRANKY_ORG_ROLE"
       region: ${AWS_REGION}
       # optional parameters
-      profile_name: "OIDC-PROFILE"
+      profile_name: "OIDC_PROFILE"
       role_session_name: 'hello world'
       session_duration: '1800'
+  - run:
+    name: Run-STS-Command
+    command: |
+      # must use same profile specified in the step above
+      aws sts get-caller-identity --profile "OIDC_PROFILE"
   - run:
       name: Log-into-AWS-ECR
       command: |
         # must use same profile specified in the step above       
-        aws ecr get-login-password --profile "OIDC-PROFILE"
+        aws ecr get-login-password --profile "OIDC_PROFILE"
